@@ -20,7 +20,7 @@ var port = process.env.PORT || 8080;
 app.use(express.static("public"));
 app.use(express.json());
 app.get("/", function (req, res) {
-  res.redirect(path.join(__dirname, "/about"));
+  res.redirect("/about");
 });
 
 app.get("/about", function (req, res) {

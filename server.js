@@ -65,9 +65,6 @@ app.get("/posts", (req, res) => {
     });
 });
 
-app.get("*", (req, res) => {
-  res.status(404).send("Page not found");
-});
 
 blogService
   .initialize()
@@ -79,3 +76,7 @@ blogService
   .catch((error) => {
     console.error("Error starting the server:", error);
   });
+
+    app.get("*", (req, res) => {
+      res.status(404).send("Page not found");
+    });

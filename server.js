@@ -1,9 +1,20 @@
+/*********************************************************************************
+ *  WEB322 – Assignment 02
+ *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source
+ *  (including 3rd party web sites) or distributed to other students.
+ *
+ *  Name: MAYANK KUMAR      Student ID: 145998217        Date: 02 FEB 2023
+ *
+ *  Cyclic Web App URL: https://web322-app-mayank.cyclic.app
+ *
+ *  GitHub Repository URL: https://github.com/mayank-Pareek/web322-app
+ *
+ ********************************************************************************/
+
 var path = require("path");
 var express = require("express");
 var app = express();
 var blogService = require("./blog-service");
-var categories = require("./data/categories.json");
-var posts = require("./data/posts.json");
 var port = process.env.PORT || 8080;
 
 app.use(express.static("public"));

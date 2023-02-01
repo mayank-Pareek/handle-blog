@@ -5,7 +5,7 @@
  *
  *  Name: MAYANK KUMAR      Student ID: 145998217        Date: 02 FEB 2023
  *
- *  Cyclic Web App URL: https://web322-app-mayank.cyclic.app
+ *  Cyclic Web App URL: https://grumpy-pear-dove.cyclic.app
  *
  *  GitHub Repository URL: https://github.com/mayank-Pareek/web322-app
  *
@@ -65,7 +65,6 @@ app.get("/posts", (req, res) => {
     });
 });
 
-
 blogService
   .initialize()
   .then(() => {
@@ -77,6 +76,6 @@ blogService
     console.error("Error starting the server:", error);
   });
 
-    app.get("*", (req, res) => {
-      res.status(404).send("Page not found");
-    });
+app.get("*", (req, res) => {
+  res.status(404).send("Page not found");
+});

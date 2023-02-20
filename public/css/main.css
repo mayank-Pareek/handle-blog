@@ -30,7 +30,7 @@ body {
   margin-right: 20px;
 }
 
-.container {
+.main-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,4 +51,28 @@ body {
 
 h2 {
   margin-bottom: 20px;
+}
+
+.file-input-box {
+  padding: 7px 10px;
+  border: 1px solid rgb(219, 209, 209);
+}
+
+.option-visibility {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.option-selection,
+.visibility-check {
+  flex-grow: 1;
+  flex-basis: 40%;
+  max-width: 100%;
+  width: 20px;
+}
+
+.submit-button {
+  display: flex;
+  justify-content: flex-end;
 }

@@ -55,9 +55,60 @@ var getCategories = () => {
   });
 };
 
+var addPost = (postData) => {
+  return new Promise((resolve, reject) => {
+    if (postData.published === undefined) {
+      postData.published = false;
+    } else postData.published = false;
+    postData.id = parseInt(posts.length + 1);
+    postData.category = parseInt(postData.category);
+    posts.push(postData);
+    resolve(postData);
+  });
+};
+
+var getPostsByCategory = (category) => {
+  return new Promise((resolve, reject) => {
+    let postsByCategory = posts.filter((post) => post.category === category);
+    if (postsByCategory.length === 0) {
+      reject("no results returned");
+    } else {
+      resolve(postsByCategory);
+    }
+  });
+};
+
+var getPostsByMinDate = (minDateStr) => {
+  return new Promise((resolve, reject) => {
+    let postsByMinDate = posts.filter(
+      (post) => new Date(post.postDate) >= new Date(minDateStr)
+    );
+    if (postsByMinDate.length === 0) {
+      reject("no results returned");
+    } else {
+      resolve(postsByMinDate);
+    }
+  });
+};
+
+var getPostById = (id) => {
+  return new Promise((resolve, reject) => {
+    let post = posts.find((post) => post.id === Number(id));
+    if (!post) {
+      reject("no result returned");
+    } else {
+      resolve(post);
+    }
+  });
+};
+
 module.exports = {
   initialize,
   getAllPosts,
   getPublishedPosts,
   getCategories,
+  addPost,
+  getPostsByCategory,
+  getPostsByMinDate,
+  getPostById,
 };

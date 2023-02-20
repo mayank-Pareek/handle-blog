@@ -3,6 +3,7 @@ var categories = [];
 const { rejects } = require("assert");
 const fs = require("fs");
 const { resolve } = require("path");
+const moment = require("moment");
 
 var initialize = () => {
   return new Promise((resolve, reject) => {
@@ -62,6 +63,7 @@ var addPost = (postData) => {
     } else postData.published = false;
     postData.id = parseInt(posts.length + 1);
     postData.category = parseInt(postData.category);
+    postData.postDate = moment().format("YYYY-MM-DD");
     posts.push(postData);
     resolve(postData);
   });

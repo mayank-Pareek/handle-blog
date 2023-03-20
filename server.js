@@ -107,16 +107,12 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
 
   function processPost(imageUrl) {
     req.body.featureImage = imageUrl;
-
-    // TODO: Process the req.body and add it as a new Blog Post before redirecting to /posts
     blogService.addPost(req.body).then(() => {
       res.redirect("/posts");
     });
   }
 });
-// app.get("/about", function (req, res) {
-//   res.sendFile(path.join(__dirname, "/views/about.html"));
-// });
+
 app.get("/about", function (req, res) {
   res.render("about");
 });
@@ -172,10 +168,10 @@ app.get("/posts", (req, res) => {
     blogService
       .getAllPosts()
       .then((data) => {
-        res.json(data);
+        res.render("posts", { posts: data });
       })
       .catch((error) => {
-        res.json({ message: error });
+        res.render("posts", { message: "no results" });
       });
   }
 });

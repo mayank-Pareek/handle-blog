@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -18,25 +17,16 @@
           <a class="navbar-brand" href="#">WEB322 - Mayank Kumar</a>
         </div>
         <ul class="nav navbar-nav">
-          <li>
-            <a href="/about">About</a>
-          </li>
-          <li>
-            <a href="/blog">Blog</a>
-          </li>
-          <li>
-            <a href="/posts">Posts</a>
-          </li>
-          <li>
-            <a href="/posts/add">Add Post</a>
-          </li>
-          <li>
-            <a href="/categories">Categories</a>
-          </li>
+          {{#navLink "/about"}}About{{/navLink}}
+          {{#navLink "/blog"}}Blog{{/navLink}}
+          {{#navLink "/posts"}}Posts{{/navLink}}
+          {{#navLink "/posts/add"}}Add Post{{/navLink}}
+          {{#navLink "/categories"}}Categories{{/navLink}}
         </ul>
       </div>
     </nav>
     <div class="main-container">
       {{{body}}}
+    </div>
   </body>
 </html>

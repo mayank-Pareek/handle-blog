@@ -14,10 +14,13 @@
 var path = require("path");
 var express = require("express");
 var app = express();
+const exphbs = require("express-handlebars")
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 
+app.engine(".hbs", exphbs.engine({ extname: ".hbs" }));
+app.set("view engine", ".hbs");
 var blogService = require("./blog-service");
 var port = process.env.PORT || 8080;
 cloudinary.config({
@@ -71,10 +74,15 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
     });
   }
 });
+// app.get("/about", function (req, res) {
+//   res.sendFile(path.join(__dirname, "/views/about.html"));
+// });
 app.get("/about", function (req, res) {
-  res.sendFile(path.join(__dirname, "/views/about.html"));
+  res.render("about", {
+    // currencies: data,
+    // layout: false,
+  });
 });
-
 app.get("/public/css/main.css", function (req, res) {
   res.set("Content-Type", "text/css");
   res.sendFile(path.join(__dirname, "public", "css", "main.css"));

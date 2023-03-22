@@ -136,10 +136,10 @@ app.get("/categories", (req, res) => {
   blogService
     .getCategories()
     .then((data) => {
-      res.json(data);
+      res.render("categories", { categories: data });
     })
     .catch((error) => {
-      res.json({ message: error });
+      res.render("categories", { message: "no results" });
     });
 });
 

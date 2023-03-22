@@ -2,30 +2,31 @@
   <div class="col-md-12">
     <h2>Posts</h2>
     <hr />
-
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Post ID</th>
-            <th>Title</th>
-            <th>Post Date</th>
-            <th>Category</th>
-            <th>Published</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each posts}}
+    <div class="container">
+      <div class="table-responsive" style="max-width: 100%;">
+        <table class="table">
+          <thead>
             <tr>
-              <td>{{id}}</td>
-              <td>{{title}}</td>
-              <td>{{postDate}}</td>
-              <td><a href="/posts?category={{category}}">{{category}}</a></td>
-              <td>{{#if published}}Yes{{else}}No{{/if}}</td>
+              <th>Post ID</th>
+              <th>Title</th>
+              <th>Post Date</th>
+              <th>Category</th>
+              <th>Published</th>
             </tr>
-          {{/each}}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {{#each posts}}
+              <tr>
+                <td>{{id}}</td>
+                <td>{{title}}</td>
+                <td>{{postDate}}</td>
+                <td><a href="/posts?category={{category}}">{{category}}</a></td>
+                <td>{{#if published}}Yes{{else}}No{{/if}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
     </div>
 
     {{#unless posts}}
@@ -33,6 +34,5 @@
         <strong>{{message}}</strong>
       </div>
     {{/unless}}
-
   </div>
 </div>

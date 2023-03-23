@@ -104,6 +104,19 @@ var getPostById = (id) => {
   });
 };
 
+var getPublishedPostsByCategory = (category) => {
+  return new Promise((resolve, reject) => {
+    let publishedPosts = posts.filter(
+      (post) => post.published === true && post.category == category
+    );
+    if (publishedPosts.length === 0) {
+      reject("no results returned");
+    } else {
+      resolve(publishedPosts);
+    }
+  });
+};
+
 module.exports = {
   initialize,
   getAllPosts,
@@ -113,4 +126,5 @@ module.exports = {
   getPostsByCategory,
   getPostsByMinDate,
   getPostById,
+  getPublishedPostsByCategory,
 };

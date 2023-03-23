@@ -77,7 +77,7 @@ app.use(function (req, res, next) {
 
 //Routes
 app.get("/", function (req, res) {
-  res.redirect("/about");
+  res.redirect("/blog");
 });
 
 app.post("/posts/add", upload.single("featureImage"), (req, res) => {

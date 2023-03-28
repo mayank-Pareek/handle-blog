@@ -1,122 +1,150 @@
-var posts = [];
-var categories = [];
-const { rejects } = require("assert");
-const fs = require("fs");
-const { resolve } = require("path");
-const moment = require("moment");
+// var posts = [];
+// var categories = [];
+// const { rejects } = require("assert");
+// const fs = require("fs");
+// const { resolve } = require("path");
+// const moment = require("moment");
 
 var initialize = () => {
   return new Promise((resolve, reject) => {
-    fs.readFile("./data/posts.json", "utf8", (err, data) => {
-      if (err) {
-        reject("Unable to posts.json file");
-      } else {
-        posts = JSON.parse(data);
-        fs.readFile("./data/categories.json", "utf8", (err, data) => {
-          if (err) {
-            reject("Unable to categories.json file");
-          } else {
-            categories = JSON.parse(data);
-            resolve();
-          }
-        });
-      }
-    });
+    reject();
   });
+  // return new Promise((resolve, reject) => {
+  //   fs.readFile("./data/posts.json", "utf8", (err, data) => {
+  //     if (err) {
+  //       reject("Unable to posts.json file");
+  //     } else {
+  //       posts = JSON.parse(data);
+  //       fs.readFile("./data/categories.json", "utf8", (err, data) => {
+  //         if (err) {
+  //           reject("Unable to categories.json file");
+  //         } else {
+  //           categories = JSON.parse(data);
+  //           resolve();
+  //         }
+  //       });
+  //     }
+  //   });
+  // });
 };
 
 var getAllPosts = () => {
   return new Promise((resolve, reject) => {
-    if (posts.length === 0) {
-      reject("no results returned");
-    } else {
-      resolve(posts);
-    }
+    reject();
   });
+  // return new Promise((resolve, reject) => {
+  //   if (posts.length === 0) {
+  //     reject("no results returned");
+  //   } else {
+  //     resolve(posts);
+  //   }
+  // });
 };
 
 var getPublishedPosts = () => {
   return new Promise((resolve, reject) => {
-    let publishedPosts = posts.filter((post) => post.published === true);
-    if (publishedPosts.length === 0) {
-      reject("no results returned");
-    } else {
-      resolve(publishedPosts);
-    }
+    reject();
   });
+  // return new Promise((resolve, reject) => {
+  //   let publishedPosts = posts.filter((post) => post.published === true);
+  //   if (publishedPosts.length === 0) {
+  //     reject("no results returned");
+  //   } else {
+  //     resolve(publishedPosts);
+  //   }
+  // });
 };
 
 var getCategories = () => {
   return new Promise((resolve, reject) => {
-    if (categories.length === 0) {
-      reject("no results returned");
-    } else {
-      resolve(categories);
-    }
+    reject();
   });
+  // return new Promise((resolve, reject) => {
+  //   if (categories.length === 0) {
+  //     reject("no results returned");
+  //   } else {
+  //     resolve(categories);
+  //   }
+  // });
 };
 
 var addPost = (postData) => {
   return new Promise((resolve, reject) => {
-    if (postData.published === undefined) {
-      postData.published = false;
-    } else postData.published = false;
-    postData.id = parseInt(posts.length + 1);
-    postData.category = parseInt(postData.category);
-    postData.postDate = moment().format("YYYY-MM-DD");
-    posts.push(postData);
-    resolve(postData);
+    reject();
   });
+  // return new Promise((resolve, reject) => {
+  //   if (postData.published === undefined) {
+  //     postData.published = false;
+  //   } else postData.published = false;
+  //   postData.id = parseInt(posts.length + 1);
+  //   postData.category = parseInt(postData.category);
+  //   postData.postDate = moment().format("YYYY-MM-DD");
+  //   posts.push(postData);
+  //   resolve(postData);
+  // });
 };
 
 var getPostsByCategory = (category) => {
   return new Promise((resolve, reject) => {
-    let postsByCategory = posts.filter((post) => post.category === category);
-    if (postsByCategory.length === 0) {
-      reject("no results returned");
-    } else {
-      resolve(postsByCategory);
-    }
+    reject();
   });
+  // return new Promise((resolve, reject) => {
+  //   let postsByCategory = posts.filter((post) => post.category === category);
+  //   if (postsByCategory.length === 0) {
+  //     reject("no results returned");
+  //   } else {
+  //     resolve(postsByCategory);
+  //   }
+  // });
 };
 
 var getPostsByMinDate = (minDateStr) => {
   return new Promise((resolve, reject) => {
-    let postsByMinDate = posts.filter(
-      (post) => new Date(post.postDate) >= new Date(minDateStr)
-    );
-    if (postsByMinDate.length === 0) {
-      reject("no results returned");
-    } else {
-      resolve(postsByMinDate);
-    }
+    reject();
   });
+  // return new Promise((resolve, reject) => {
+  //   let postsByMinDate = posts.filter(
+  //     (post) => new Date(post.postDate) >= new Date(minDateStr)
+  //   );
+  //   if (postsByMinDate.length === 0) {
+  //     reject("no results returned");
+  //   } else {
+  //     resolve(postsByMinDate);
+  //   }
+  // });
 };
 
 var getPostById = (id) => {
   return new Promise((resolve, reject) => {
-    let post = posts.find((post) => post.id === Number(id));
-    if (!post) {
-      reject("no result returned");
-    } else {
-      resolve(post);
-    }
+    reject();
   });
+  // return new Promise((resolve, reject) => {
+  //   let post = posts.find((post) => post.id === Number(id));
+  //   if (!post) {
+  //     reject("no result returned");
+  //   } else {
+  //     resolve(post);
+  //   }
+  // });
 };
 
+// var getPublishedPostsByCategory = (category) => {
+//   return new Promise((resolve, reject) => {
+//     let publishedPosts = posts.filter(
+//       (post) => post.published === true && post.category == category
+//     );
+//     if (publishedPosts.length === 0) {
+//       reject("no results returned");
+//     } else {
+//       resolve(publishedPosts);
+//     }
+//   });
+// };
 var getPublishedPostsByCategory = (category) => {
   return new Promise((resolve, reject) => {
-    let publishedPosts = posts.filter(
-      (post) => post.published === true && post.category == category
-    );
-    if (publishedPosts.length === 0) {
-      reject("no results returned");
-    } else {
-      resolve(publishedPosts);
-    }
+    reject();
   });
 };
-
 module.exports = {
   initialize,
   getAllPosts,

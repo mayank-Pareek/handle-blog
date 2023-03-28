@@ -19,6 +19,7 @@ const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const exphbs = require("express-handlebars");
 const stripJs = require("strip-js");
+app.use(express.urlencoded({ extended: true }));
 
 app.engine(
   ".hbs",
@@ -123,6 +124,24 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
   }
 });
 
+app.post("/categories/add", (req, res) => {
+  for (let key in req.body) {
+    if (req.body[key] === "") {
+      req.body[key] = null;
+    }
+  }
+
+  blogService
+    .addCategory(req.body)
+    .then(() => {
+      res.redirect("/categories");
+    })
+    .catch((error) => {
+      console.log(error);
+      res.redirect("/categories/add");
+    });
+});
+
 app.get("/about", function (req, res) {
   res.render("about");
 });
@@ -225,7 +244,11 @@ app.get("/categories", (req, res) => {
   blogService
     .getCategories()
     .then((data) => {
-      res.render("categories", { categories: data });
+      if (data.length > 0) {
+        res.render("categories", { categories: data });
+      } else {
+        res.render("categories", { message: "no results" });
+      }
     })
     .catch((error) => {
       res.render("categories", { message: "no results" });
@@ -257,7 +280,11 @@ app.get("/posts", (req, res) => {
     blogService
       .getAllPosts()
       .then((data) => {
-        res.render("posts", { posts: data });
+        if (data.length > 0) {
+          res.render("posts", { posts: data });
+        } else {
+          res.render("posts", { message: "no results" });
+        }
       })
       .catch((error) => {
         res.render("posts", { message: "no results" });
@@ -279,7 +306,18 @@ app.get("/post/:value", (req, res) => {
 });
 
 app.get("/posts/add", (req, res) => {
-  res.render("addPost");
+  blogService
+    .getCategories()
+    .then((data) => {
+      res.render("addPost", { categories: data });
+    })
+    .catch(() => {
+      res.render("addPost", { categories: [] });
+    });
+});
+
+app.get("/categories/add", (req, res) => {
+  res.render("addCategory");
 });
 
 blogService
@@ -292,6 +330,31 @@ blogService
   .catch((error) => {
     console.error("Error starting the server:", error);
   });
+
+//Delete
+app.get("/categories/delete/:id", (req, res) => {
+  const id = req.params.id;
+  blogService
+    .deleteCategoryById(id)
+    .then(() => {
+      res.redirect("/categories");
+    })
+    .catch(() => {
+      res.status(500).send("Unable to Remove Category");
+    });
+});
+
+app.get("/posts/delete/:id", (req, res) => {
+  const postId = req.params.id;
+  blogService
+    .deletePostById(postId)
+    .then(() => {
+      res.redirect("/posts");
+    })
+    .catch(() => {
+      res.status(500).send("Unable to Remove Post");
+    });
+});
 
 app.get("*", (req, res) => {
   res.status(404);

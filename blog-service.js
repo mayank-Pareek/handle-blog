@@ -112,6 +112,23 @@ var addPost = (postData) => {
   });
 };
 
+var addCategory = (categoryData) => {
+  return new Promise((resolve, reject) => {
+    for (let key in categoryData) {
+      if (categoryData[key] === "") {
+        categoryData[key] = null;
+      }
+    }
+    Category.create(categoryData)
+      .then(() => {
+        resolve();
+      })
+      .catch((error) => {
+        reject("unable to create category");
+      });
+  });
+};
+
 var getPostsByCategory = (categoryId) => {
   return new Promise((resolve, reject) => {
     Post.findAll({
@@ -185,14 +202,58 @@ var getPublishedPostsByCategory = (categoryId) => {
       });
   });
 };
+
+var deleteCategoryById = (id) => {
+  return new Promise((resolve, reject) => {
+    Category.destroy({
+      where: {
+        id: id,
+      },
+    })
+      .then((numDeleted) => {
+        if (numDeleted === 1) {
+          resolve();
+        } else {
+          reject("unable to delete category");
+        }
+      })
+      .catch((error) => {
+        reject("unable to delete category");
+      });
+  });
+};
+
+var deletePostById = (id) => {
+  return new Promise((resolve, reject) => {
+    Post.destroy({
+      where: {
+        id: id,
+      },
+    })
+      .then((numDeleted) => {
+        if (numDeleted === 1) {
+          resolve();
+        } else {
+          reject("unable to delete post");
+        }
+      })
+      .catch((error) => {
+        reject("unable to delete post");
+      });
+  });
+};
+
 module.exports = {
   initialize,
   getAllPosts,
   getPublishedPosts,
   getCategories,
   addPost,
+  addCategory,
   getPostsByCategory,
   getPostsByMinDate,
   getPostById,
   getPublishedPostsByCategory,
+  deleteCategoryById,
+  deletePostById,
 };

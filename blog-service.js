@@ -4,6 +4,21 @@
 // const fs = require("fs");
 // const { resolve } = require("path");
 // const moment = require("moment");
+const Sequelize = require("sequelize");
+var sequelize = new Sequelize(
+  "ddqmsmio",
+  "ddqmsmio",
+  "U2JESdVtzZgxSGQ1BZx2CgD7Umh7ea5Q",
+  {
+    host: "peanut.db.elephantsql.com",
+    dialect: "postgres",
+    port: 5432,
+    dialectOptions: {
+      ssl: { rejectUnauthorized: false },
+    },
+    query: { raw: true },
+  }
+);
 
 var initialize = () => {
   return new Promise((resolve, reject) => {

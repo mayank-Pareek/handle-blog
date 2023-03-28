@@ -20,6 +20,21 @@ var sequelize = new Sequelize(
   }
 );
 
+// Define a data models
+var Post = sequelize.define("Post", {
+  body: Sequelize.TEXT,
+  title: Sequelize.STRING,
+  postDate: Sequelize.DATE,
+  featureImage: Sequelize.STRING,
+  published: Sequelize.BOOLEAN,
+});
+
+var Category = sequelize.define("Category", {
+  category: Sequelize.STRING,
+});
+
+Post.belongsTo(Category, { foreignKey: "category" });
+
 var initialize = () => {
   return new Promise((resolve, reject) => {
     reject();

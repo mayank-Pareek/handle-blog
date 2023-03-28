@@ -340,19 +340,18 @@ app.get("/categories/delete/:id", (req, res) => {
       res.redirect("/categories");
     })
     .catch(() => {
-      res.status(500).send("Unable to Remove Category");
+      res.status(500).send("Unable to Remove Category / Category not found");
     });
 });
 
 app.get("/posts/delete/:id", (req, res) => {
-  const postId = req.params.id;
   blogService
-    .deletePostById(postId)
+    .deletePostById(req.params.id)
     .then(() => {
       res.redirect("/posts");
     })
-    .catch(() => {
-      res.status(500).send("Unable to Remove Post");
+    .catch((error) => {
+      res.status(500).send("Unable to Remove Post / Post not found");
     });
 });
 

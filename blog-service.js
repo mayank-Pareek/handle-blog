@@ -223,22 +223,22 @@ var deleteCategoryById = (id) => {
   });
 };
 
-var deletePostById = (id) => {
+const deletePostById = (id) => {
   return new Promise((resolve, reject) => {
     Post.destroy({
       where: {
         id: id,
       },
     })
-      .then((numDeleted) => {
-        if (numDeleted === 1) {
+      .then((result) => {
+        if (result === 1) {
           resolve();
         } else {
-          reject("unable to delete post");
+          reject("Unable to Remove Post / Post not found");
         }
       })
       .catch((error) => {
-        reject("unable to delete post");
+        reject(error);
       });
   });
 };

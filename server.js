@@ -3,7 +3,7 @@
  *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source
  *  (including 3rd party web sites) or distributed to other students.
  *
- *  Name: MAYANK KUMAR      Student ID: 145998217        Date: 22 FEB 2023
+ *  Name: MAYANK KUMAR      Student ID: 145998217        Date: 28 MARCH 2023
  *
  *  Cyclic Web App URL: https://grumpy-pear-dove.cyclic.app
  *
@@ -305,6 +305,7 @@ app.get("/post/:value", (req, res) => {
     });
 });
 
+//Add
 app.get("/posts/add", (req, res) => {
   blogService
     .getCategories()
@@ -319,17 +320,6 @@ app.get("/posts/add", (req, res) => {
 app.get("/categories/add", (req, res) => {
   res.render("addCategory");
 });
-
-blogService
-  .initialize()
-  .then(() => {
-    app.listen(port, function () {
-      console.log(`Express http server listening on ${port}`);
-    });
-  })
-  .catch((error) => {
-    console.error("Error starting the server:", error);
-  });
 
 //Delete
 app.get("/categories/delete/:id", (req, res) => {
@@ -355,7 +345,20 @@ app.get("/posts/delete/:id", (req, res) => {
     });
 });
 
+//Error 404
 app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
 });
+
+//Server
+blogService
+  .initialize()
+  .then(() => {
+    app.listen(port, function () {
+      console.log(`Express http server listening on ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Error starting the server:", error);
+  });

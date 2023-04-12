@@ -19,6 +19,7 @@ const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const exphbs = require("express-handlebars");
 const stripJs = require("strip-js");
+const authData = require("./auth-service");
 app.use(express.urlencoded({ extended: true }));
 
 app.engine(

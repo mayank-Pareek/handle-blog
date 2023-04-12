@@ -60,7 +60,7 @@ app.engine(
   })
 );
 app.set("view engine", ".hbs");
-var blogService = require("./blog-service");
+var blogData = require("./blog-service");
 var port = process.env.PORT || 8080;
 cloudinary.config({
   cloud_name: "dkhyicipr",
@@ -119,7 +119,7 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
 
   function processPost(imageUrl) {
     req.body.featureImage = imageUrl;
-    blogService.addPost(req.body).then(() => {
+    blogData.addPost(req.body).then(() => {
       res.redirect("/posts");
     });
   }
@@ -132,7 +132,7 @@ app.post("/categories/add", (req, res) => {
     }
   }
 
-  blogService
+  blogData
     .addCategory(req.body)
     .then(() => {
       res.redirect("/categories");
@@ -162,10 +162,10 @@ app.get("/blog", async (req, res) => {
     // if there's a "category" query, filter the returned posts by category
     if (req.query.category) {
       // Obtain the published "posts" by category
-      posts = await blogService.getPublishedPostsByCategory(req.query.category);
+      posts = await blogData.getPublishedPostsByCategory(req.query.category);
     } else {
       // Obtain the published "posts"
-      posts = await blogService.getPublishedPosts();
+      posts = await blogData.getPublishedPosts();
     }
 
     // sort the published posts by postDate
@@ -182,7 +182,7 @@ app.get("/blog", async (req, res) => {
 
   try {
     // Obtain the full list of "categories"
-    let categories = await blogService.getCategories();
+    let categories = await blogData.getCategories();
 
     // store the "categories" data in the viewData object (to be passed to the view)
     viewData.categories = categories;
@@ -205,10 +205,10 @@ app.get("/blog/:id", async (req, res) => {
     // if there's a "category" query, filter the returned posts by category
     if (req.query.category) {
       // Obtain the published "posts" by category
-      posts = await blogService.getPublishedPostsByCategory(req.query.category);
+      posts = await blogData.getPublishedPostsByCategory(req.query.category);
     } else {
       // Obtain the published "posts"
-      posts = await blogService.getPublishedPosts();
+      posts = await blogData.getPublishedPosts();
     }
 
     // sort the published posts by postDate
@@ -222,14 +222,14 @@ app.get("/blog/:id", async (req, res) => {
 
   try {
     // Obtain the post by "id"
-    viewData.post = await blogService.getPostById(req.params.id);
+    viewData.post = await blogData.getPostById(req.params.id);
   } catch (err) {
     viewData.message = "no results";
   }
 
   try {
     // Obtain the full list of "categories"
-    let categories = await blogService.getCategories();
+    let categories = await blogData.getCategories();
 
     // store the "categories" data in the viewData object (to be passed to the view)
     viewData.categories = categories;
@@ -242,7 +242,7 @@ app.get("/blog/:id", async (req, res) => {
 });
 
 app.get("/categories", (req, res) => {
-  blogService
+  blogData
     .getCategories()
     .then((data) => {
       if (data.length > 0) {
@@ -260,7 +260,7 @@ app.get("/posts", (req, res) => {
   const { category, minDate } = req.query;
 
   if (category) {
-    blogService
+    blogData
       .getPostsByCategory(parseInt(category))
       .then((data) => {
         res.json(data);
@@ -269,7 +269,7 @@ app.get("/posts", (req, res) => {
         res.json({ message: error });
       });
   } else if (minDate) {
-    blogService
+    blogData
       .getPostsByMinDate(minDate)
       .then((data) => {
         res.json(data);
@@ -278,7 +278,7 @@ app.get("/posts", (req, res) => {
         res.json({ message: error });
       });
   } else {
-    blogService
+    blogData
       .getAllPosts()
       .then((data) => {
         if (data.length > 0) {
@@ -296,7 +296,7 @@ app.get("/posts", (req, res) => {
 app.get("/post/:value", (req, res) => {
   const { value } = req.params;
 
-  blogService
+  blogData
     .getPostById(value)
     .then((data) => {
       res.json(data);
@@ -308,7 +308,7 @@ app.get("/post/:value", (req, res) => {
 
 //Add
 app.get("/posts/add", (req, res) => {
-  blogService
+  blogData
     .getCategories()
     .then((data) => {
       res.render("addPost", { categories: data });
@@ -325,7 +325,7 @@ app.get("/categories/add", (req, res) => {
 //Delete
 app.get("/categories/delete/:id", (req, res) => {
   const id = req.params.id;
-  blogService
+  blogData
     .deleteCategoryById(id)
     .then(() => {
       res.redirect("/categories");
@@ -336,7 +336,7 @@ app.get("/categories/delete/:id", (req, res) => {
 });
 
 app.get("/posts/delete/:id", (req, res) => {
-  blogService
+  blogData
     .deletePostById(req.params.id)
     .then(() => {
       res.redirect("/posts");
@@ -353,8 +353,9 @@ app.get("*", (req, res) => {
 });
 
 //Server
-blogService
+blogData
   .initialize()
+  .then(authData.initialize)
   .then(() => {
     app.listen(port, function () {
       console.log(`Express http server listening on ${port}`);

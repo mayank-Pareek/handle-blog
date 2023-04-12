@@ -19,14 +19,21 @@ const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const exphbs = require("express-handlebars");
 const stripJs = require("strip-js");
+const clientSessions = require("client-sessions");
 const authData = require("./auth-service");
-app.use(express.urlencoded({ extended: true }));
+var blogData = require("./blog-service");
+var port = process.env.PORT || 8080;
 
+// set up middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.use(express.json());
 app.engine(
   ".hbs",
   exphbs.engine({
     extname: ".hbs",
     helpers: {
+      // define Handlebars helpers
       navLink: function (url, options) {
         return (
           "<li" +
@@ -60,19 +67,41 @@ app.engine(
   })
 );
 app.set("view engine", ".hbs");
-var blogData = require("./blog-service");
-var port = process.env.PORT || 8080;
 cloudinary.config({
   cloud_name: "dkhyicipr",
   api_key: "549913765539575",
   api_secret: "hgt0yVKd1uqGAWhvVpNe_AzIgXc",
   secure: true,
 });
-const upload = multer();
-app.use(express.static("public"));
-app.use(express.json());
+
+app.use(
+  clientSessions({
+    cookieName: "session",
+    secret: "web322app",
+    duration: 10 * 60 * 1000,
+    activeDuration: 5 * 60 * 1000,
+  })
+);
 
 app.use(function (req, res, next) {
+  // make session data available to views
+  res.locals.session = req.session;
+  next();
+});
+
+function ensureLogin(req, res, next) {
+  // middleware to check if user is logged in
+  if (!req.session.user) {
+    res.redirect("login");
+  } else {
+    next();
+  }
+}
+
+const upload = multer();
+
+app.use(function (req, res, next) {
+  // set up global variables for views
   let route = req.path.substring(1);
   app.locals.activeRoute =
     "/" +
@@ -88,64 +117,10 @@ app.get("/", function (req, res) {
   res.redirect("/blog");
 });
 
-app.post("/posts/add", upload.single("featureImage"), (req, res) => {
-  if (req.file) {
-    let streamUpload = (req) => {
-      return new Promise((resolve, reject) => {
-        let stream = cloudinary.uploader.upload_stream((error, result) => {
-          if (result) {
-            resolve(result);
-          } else {
-            reject(error);
-          }
-        });
-
-        streamifier.createReadStream(req.file.buffer).pipe(stream);
-      });
-    };
-
-    async function upload(req) {
-      let result = await streamUpload(req);
-      console.log(result);
-      return result;
-    }
-
-    upload(req).then((uploaded) => {
-      processPost(uploaded.url);
-    });
-  } else {
-    processPost("");
-  }
-
-  function processPost(imageUrl) {
-    req.body.featureImage = imageUrl;
-    blogData.addPost(req.body).then(() => {
-      res.redirect("/posts");
-    });
-  }
-});
-
-app.post("/categories/add", (req, res) => {
-  for (let key in req.body) {
-    if (req.body[key] === "") {
-      req.body[key] = null;
-    }
-  }
-
-  blogData
-    .addCategory(req.body)
-    .then(() => {
-      res.redirect("/categories");
-    })
-    .catch((error) => {
-      console.log(error);
-      res.redirect("/categories/add");
-    });
-});
-
 app.get("/about", function (req, res) {
   res.render("about");
 });
+
 app.get("/public/css/main.css", function (req, res) {
   res.set("Content-Type", "text/css");
   res.sendFile(path.join(__dirname, "public", "css", "main.css"));
@@ -194,7 +169,67 @@ app.get("/blog", async (req, res) => {
   res.render("blog", { data: viewData });
 });
 
-app.get("/blog/:id", async (req, res) => {
+app.post(
+  "/posts/add",
+  upload.single("featureImage"),
+  ensureLogin,
+  (req, res) => {
+    if (req.file) {
+      let streamUpload = (req) => {
+        return new Promise((resolve, reject) => {
+          let stream = cloudinary.uploader.upload_stream((error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          });
+
+          streamifier.createReadStream(req.file.buffer).pipe(stream);
+        });
+      };
+
+      async function upload(req) {
+        let result = await streamUpload(req);
+        console.log(result);
+        return result;
+      }
+
+      upload(req).then((uploaded) => {
+        processPost(uploaded.url);
+      });
+    } else {
+      processPost("");
+    }
+
+    function processPost(imageUrl) {
+      req.body.featureImage = imageUrl;
+      blogData.addPost(req.body).then(() => {
+        res.redirect("/posts");
+      });
+    }
+  }
+);
+
+app.post("/categories/add", ensureLogin, (req, res) => {
+  for (let key in req.body) {
+    if (req.body[key] === "") {
+      req.body[key] = null;
+    }
+  }
+
+  blogData
+    .addCategory(req.body)
+    .then(() => {
+      res.redirect("/categories");
+    })
+    .catch((error) => {
+      console.log(error);
+      res.redirect("/categories/add");
+    });
+});
+
+app.get("/blog/:id", ensureLogin, async (req, res) => {
   // Declare an object to store properties for the view
   let viewData = {};
 
@@ -241,7 +276,7 @@ app.get("/blog/:id", async (req, res) => {
   res.render("blog", { data: viewData });
 });
 
-app.get("/categories", (req, res) => {
+app.get("/categories", ensureLogin, (req, res) => {
   blogData
     .getCategories()
     .then((data) => {
@@ -256,7 +291,7 @@ app.get("/categories", (req, res) => {
     });
 });
 
-app.get("/posts", (req, res) => {
+app.get("/posts", ensureLogin, (req, res) => {
   const { category, minDate } = req.query;
 
   if (category) {
@@ -293,7 +328,7 @@ app.get("/posts", (req, res) => {
   }
 });
 
-app.get("/post/:value", (req, res) => {
+app.get("/post/:value", ensureLogin, (req, res) => {
   const { value } = req.params;
 
   blogData
@@ -307,7 +342,7 @@ app.get("/post/:value", (req, res) => {
 });
 
 //Add
-app.get("/posts/add", (req, res) => {
+app.get("/posts/add", ensureLogin, (req, res) => {
   blogData
     .getCategories()
     .then((data) => {
@@ -318,12 +353,12 @@ app.get("/posts/add", (req, res) => {
     });
 });
 
-app.get("/categories/add", (req, res) => {
+app.get("/categories/add", ensureLogin, (req, res) => {
   res.render("addCategory");
 });
 
 //Delete
-app.get("/categories/delete/:id", (req, res) => {
+app.get("/categories/delete/:id", ensureLogin, (req, res) => {
   const id = req.params.id;
   blogData
     .deleteCategoryById(id)
@@ -335,7 +370,7 @@ app.get("/categories/delete/:id", (req, res) => {
     });
 });
 
-app.get("/posts/delete/:id", (req, res) => {
+app.get("/posts/delete/:id", ensureLogin, (req, res) => {
   blogData
     .deletePostById(req.params.id)
     .then(() => {

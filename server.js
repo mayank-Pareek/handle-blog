@@ -121,9 +121,58 @@ app.get("/about", function (req, res) {
   res.render("about");
 });
 
+app.get("/login", function (req, res) {
+  res.render("login");
+});
+
+app.get("/register", function (req, res) {
+  res.render("register");
+});
+
 app.get("/public/css/main.css", function (req, res) {
   res.set("Content-Type", "text/css");
   res.sendFile(path.join(__dirname, "public", "css", "main.css"));
+});
+
+app.post("/register", (req, res) => {
+  const userData = req.body;
+  authData
+    .RegisterUser(userData)
+    .then(() => {
+      res.render("register", { successMessage: "User created" });
+    })
+    .catch((err) => {
+      res.render("register", {
+        errorMessage: err,
+        userName: req.body.userName,
+      });
+    });
+});
+
+app.post("/login", (req, res) => {
+  req.body.userAgent = req.get("User-Agent");
+  authData
+    .checkUser(req.body)
+    .then((user) => {
+      req.session.user = {
+        userName: user.userName,
+        email: user.email,
+        loginHistory: user.loginHistory,
+      };
+      res.redirect("/posts");
+    })
+    .catch((err) => {
+      res.render("login", { errorMessage: err, userName: req.body.userName });
+    });
+});
+
+app.get("/userHistory", ensureLogin, function (req, res) {
+  res.render("userHistory");
+});
+
+app.get("/logout", (req, res) => {
+  req.session.reset(); // Reset the session
+  res.redirect("/"); // Redirect to the home page
 });
 
 app.get("/blog", async (req, res) => {

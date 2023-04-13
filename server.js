@@ -125,19 +125,38 @@ app.get("/login", function (req, res) {
   res.render("login");
 });
 
-app.get("/register", function (req, res) {
-  res.render("register");
+app.post("/login", (req, res) => {
+  req.body.userAgent = req.get("User-Agent");
+  authData
+    .checkUser(req.body)
+    .then((user) => {
+      if (user) {
+        req.session.user = {
+          userName: user.userName,
+          email: user.email,
+          loginHistory: user.loginHistory,
+        };
+        res.redirect("/posts");
+      } else {
+        throw new Error("Unable to find user");
+      }
+    })
+    .catch((err) => {
+      res.render("login", {
+        errorMessage: err.message,
+        userName: req.body.userName,
+      });
+    });
 });
 
-app.get("/public/css/main.css", function (req, res) {
-  res.set("Content-Type", "text/css");
-  res.sendFile(path.join(__dirname, "public", "css", "main.css"));
+app.get("/register", function (req, res) {
+  res.render("register");
 });
 
 app.post("/register", (req, res) => {
   const userData = req.body;
   authData
-    .RegisterUser(userData)
+    .registerUser(userData)
     .then(() => {
       res.render("register", { successMessage: "User created" });
     })
@@ -149,21 +168,9 @@ app.post("/register", (req, res) => {
     });
 });
 
-app.post("/login", (req, res) => {
-  req.body.userAgent = req.get("User-Agent");
-  authData
-    .checkUser(req.body)
-    .then((user) => {
-      req.session.user = {
-        userName: user.userName,
-        email: user.email,
-        loginHistory: user.loginHistory,
-      };
-      res.redirect("/posts");
-    })
-    .catch((err) => {
-      res.render("login", { errorMessage: err, userName: req.body.userName });
-    });
+app.get("/public/css/main.css", function (req, res) {
+  res.set("Content-Type", "text/css");
+  res.sendFile(path.join(__dirname, "public", "css", "main.css"));
 });
 
 app.get("/userHistory", ensureLogin, function (req, res) {

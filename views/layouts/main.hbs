@@ -9,6 +9,11 @@
       href="https://bootswatch.com/3/superhero/bootstrap.min.css"
     />
     <link rel="stylesheet" href="/public/css/main.css" />
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   </head>
   <body>
     <nav class="navbar navbar-inverse">
@@ -42,6 +47,12 @@
                 </ul>
               </div>
             </form>
+
+            <ul class="nav navbar-nav navbar-right">
+              {{#navLink "/posts"}}Posts{{/navLink}}
+              {{#navLink "/categories"}}Categories{{/navLink}}
+            </ul>
+
           {{else}}
             <form class="navbar-form navbar-right">
               <a href="/register" class="btn btn-success"><span
@@ -52,15 +63,19 @@
                 ></span>&nbsp;&nbsp;Log In</a>
             </form>
           {{/if}}
-          <ul class="nav navbar-nav navbar-right">
-            {{#navLink "/posts"}}Posts{{/navLink}}
-            {{#navLink "/categories"}}Categories{{/navLink}}
-          </ul>
         </div>
       </div>
     </nav>
-    <div class="main-container">
+    <div class="container">
       {{{body}}}
     </div>
+    <script>
+      const userMenuButton = document.getElementById("userMenu"); const
+      dropdownMenu = document.querySelector(".dropdown-menu");
+      userMenuButton.addEventListener("click", function () {
+      dropdownMenu.style.display = (dropdownMenu.style.display === "none") ?
+      "flex" : "none"; });
+    </script>
+
   </body>
 </html>

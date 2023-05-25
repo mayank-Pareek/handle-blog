@@ -14,7 +14,6 @@ var sequelize = new Sequelize(
   }
 );
 
-// Define a data models
 var Post = sequelize.define("Post", {
   body: Sequelize.TEXT,
   title: Sequelize.STRING,

@@ -2,10 +2,12 @@
 <section class="main col-md-9">
 {{#if data.posts}}
 <article>
-<h2><strong>{{data.post.title}}</strong></h2>
-<img src="{{data.post.featureImage}}" alt="feature image" style="width:100%" />
+<h2 id="blog-title"><strong>{{data.post.title}}</strong></h2>
+<img src="{{data.post.featureImage}}" alt="feature image" id="feature-img" />
 <br /><br />
+<div class="content-container">
 {{#safeHTML data.post.body}}{{/safeHTML}}
+</div>
 <br /><br />
 <strong>Category:</strong> {{data.post.category}}<br />
 <strong>Last Updated:</strong> {{#formatDate data.post.postDate}}{{/formatDate}}

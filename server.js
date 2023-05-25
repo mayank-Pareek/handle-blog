@@ -5,13 +5,12 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const exphbs = require("express-handlebars");
-const bodyParser = require("body-parser");
 const stripJs = require("strip-js");
 const clientSessions = require("client-sessions");
 const authData = require("./auth-service");
 var blogData = require("./blog-service");
 require("dotenv").config();
-const cors = require('cors');
+const cors = require("cors");
 app.use(cors());
 var port = process.env.PORT || 8080;
 
@@ -60,8 +59,8 @@ app.engine(
 app.set("view engine", ".hbs");
 cloudinary.config({
   cloud_name: "dkhyicipr",
-  api_key: "549913765539575",
-  api_secret: "hgt0yVKd1uqGAWhvVpNe_AzIgXc",
+  api_key: CLOUDINARY_KEY,
+  api_secret: CLOUDINARY_SECRET,
   secure: true,
 });
 

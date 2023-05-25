@@ -59,8 +59,8 @@ app.engine(
 app.set("view engine", ".hbs");
 cloudinary.config({
   cloud_name: "dkhyicipr",
-  api_key: CLOUDINARY_KEY,
-  api_secret: CLOUDINARY_SECRET,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
   secure: true,
 });
 

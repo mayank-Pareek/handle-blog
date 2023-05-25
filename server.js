@@ -11,6 +11,8 @@ const clientSessions = require("client-sessions");
 const authData = require("./auth-service");
 var blogData = require("./blog-service");
 require("dotenv").config();
+const cors = require('cors');
+app.use(cors());
 var port = process.env.PORT || 8080;
 
 // set up middleware

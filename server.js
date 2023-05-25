@@ -5,10 +5,12 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const exphbs = require("express-handlebars");
+const bodyParser = require("body-parser");
 const stripJs = require("strip-js");
 const clientSessions = require("client-sessions");
 const authData = require("./auth-service");
 var blogData = require("./blog-service");
+require("dotenv").config();
 var port = process.env.PORT || 8080;
 
 // set up middleware

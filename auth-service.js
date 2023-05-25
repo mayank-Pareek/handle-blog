@@ -33,8 +33,8 @@ let User;
 
 module.exports.initialize = function () {
   return new Promise(function (resolve, reject) {
-    let db = mongoose.createConnection(
-      "mongodb+srv://mayankkumar:pareek777@senecaweb.t4mlita.mongodb.net/web322app"
+    
+    let db = mongoose.createConnection(process.env.MONGO_URI
     );
     db.on("error", (err) => {
       reject(err); // reject the promise with the provided error

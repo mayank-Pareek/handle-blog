@@ -1,5 +1,5 @@
 var path = require("path");
-var express = require("express");
+const express = require("express");
 var app = express();
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;

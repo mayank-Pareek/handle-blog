@@ -28,17 +28,14 @@ var Category = sequelize.define("Category", {
 
 Post.belongsTo(Category, { foreignKey: "category" });
 
-var initialize = () => {
-  return new Promise((resolve, reject) => {
-    sequelize
-      .sync()
-      .then(() => {
-        resolve();
-      })
-      .catch((error) => {
-        reject("unable to sync the database");
-      });
-  });
+const initialize = async () => {
+  try {
+    await sequelize.sync();
+    console.log("Database synced successfully");
+  } catch (error) {
+    console.error("Unable to sync the database:", error);
+    throw error;
+  }
 };
 
 var getAllPosts = () => {

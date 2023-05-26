@@ -33,9 +33,9 @@ let User;
 
 module.exports.initialize = function () {
   return new Promise(function (resolve, reject) {
-    console.log(`authdata.initialize is called`);
     let db = mongoose.createConnection(process.env.MONGO_URI
-    );
+      );
+    console.log(`authdata.initialize is called`);
     db.on("error", (err) => {
       reject(err); // reject the promise with the provided error
     });

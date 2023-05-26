@@ -35,9 +35,9 @@ module.exports.initialize = function () {
   return new Promise(function (resolve, reject) {
     let db = mongoose.createConnection(process.env.MONGO_URI
       );
-    console.log(`authdata.initialize is called`);
-    db.on("error", (err) => {
-      reject(err); // reject the promise with the provided error
+      db.on("error", (err) => {
+        console.log(`db.on is called - reject`);
+        reject(err); // reject the promise with the provided error
     });
     db.once("open", () => {
       User = db.model("users", userSchema);

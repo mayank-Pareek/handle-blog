@@ -40,6 +40,7 @@ module.exports.initialize = function () {
         reject(err); // reject the promise with the provided error
     });
     db.once("open", () => {
+      console.log("db.once is called - resolve");
       User = db.model("users", userSchema);
       resolve();
     });

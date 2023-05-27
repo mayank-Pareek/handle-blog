@@ -438,8 +438,8 @@ app.get("*", (req, res) => {
 //Server
 (async () => {
   try {
-    await blogData.initialize();
     await authData.initialize();
+    await blogData.initialize();
 
     app.listen(port, function () {
       console.log(`Express http server listening on ${port}`);

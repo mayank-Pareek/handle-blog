@@ -32,8 +32,8 @@ const userSchema = new Schema({
 let User;
 
 module.exports.initialize = function () {
-  return new Promise(function (resolve, reject) {
-    let db = mongoose.createConnection(process.env.MONGO_URI
+  return new Promise(async function (resolve, reject) {
+    let db = await mongoose.createConnection(process.env.MONGO_URI
       );
       db.on("error", (err) => {
         console.log(`db.on is called - reject`);

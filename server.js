@@ -436,14 +436,15 @@ app.get("*", (req, res) => {
 });
 
 //Server
-blogData
-  .initialize()
-  .then(authData.initialize)
-  .then(() => {
+(async () => {
+  try {
+    await blogData.initialize();
+    await authData.initialize();
+
     app.listen(port, function () {
       console.log(`Express http server listening on ${port}`);
     });
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error("Error starting the server:", error);
-  });
+  }
+})();

@@ -30,20 +30,23 @@ const userSchema = new Schema({
 });
 
 let User;
-
 module.exports.initialize = function () {
-  return new Promise(async function (resolve, reject) {
-    let db = await mongoose.createConnection(process.env.MONGO_URI
-      );
+  return new Promise(function (resolve, reject) {
+    try {
+      let db = mongoose.createConnection(process.env.MONGO_URI);
       db.on("error", (err) => {
-        console.log(`db.on is called - reject`);
-        reject(err); // reject the promise with the provided error
-    });
-    db.once("open", () => {
-      console.log("db.once is called - resolve");
-      User = db.model("users", userSchema);
-      resolve();
-    });
+        console.log("Error connecting to the MongoDB:", err);
+        reject(err);
+      });
+      db.once("open", () => {
+        console.log("Connected to MongoDB");
+        const User = db.model("users", userSchema);
+        resolve();
+      });
+    } catch (err) {
+      console.log("Error creating MongoDB connection:", err);
+      reject(err);
+    }
   });
 };
 
@@ -81,28 +84,27 @@ module.exports.registerUser = function (userData) {
 };
 
 module.exports.checkUser = async function (userData) {
-    try {
-      const users = await User.find({ userName: userData.userName }).exec();
-      if (users.length === 0) {
-        throw new Error("Unable to find user: " + userData.userName);
-      }
-      const result = await bcrypt.compare(userData.password, users[0].password);
-      if (result) {
-        const loginHistory = users[0].loginHistory;
-        loginHistory.push({
-          dateTime: new Date().toString(),
-          userAgent: userData.userAgent,
-        });
-        await User.updateOne(
-          { userName: users[0].userName },
-          { $set: { loginHistory: loginHistory } }
-        ).exec();
-        return users[0];
-      } else {
-        throw new Error("Incorrect Password for user: " + userData.userName);
-      }
-    } catch (err) {
-      throw new Error("There was an error verifying the user: " + err);
+  try {
+    const users = await User.find({ userName: userData.userName }).exec();
+    if (users.length === 0) {
+      throw new Error("Unable to find user: " + userData.userName);
     }
-  };
-  
+    const result = await bcrypt.compare(userData.password, users[0].password);
+    if (result) {
+      const loginHistory = users[0].loginHistory;
+      loginHistory.push({
+        dateTime: new Date().toString(),
+        userAgent: userData.userAgent,
+      });
+      await User.updateOne(
+        { userName: users[0].userName },
+        { $set: { loginHistory: loginHistory } }
+      ).exec();
+      return users[0];
+    } else {
+      throw new Error("Incorrect Password for user: " + userData.userName);
+    }
+  } catch (err) {
+    throw new Error("There was an error verifying the user: " + err);
+  }
+};

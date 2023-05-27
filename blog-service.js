@@ -31,9 +31,9 @@ Post.belongsTo(Category, { foreignKey: "category" });
 const initialize = async () => {
   try {
     await sequelize.sync();
-    console.log("Database synced successfully");
+    console.log("PostgreSQL synced successfully");
   } catch (error) {
-    console.error("Unable to sync the database:", error);
+    console.error("Unable to sync PostgreSQL:", error);
     throw error;
   }
 };

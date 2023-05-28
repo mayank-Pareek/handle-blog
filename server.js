@@ -128,7 +128,7 @@ app.post("/login", (req, res) => {
           email: user.email,
           loginHistory: user.loginHistory,
         };
-        res.redirect("/posts");
+        res.redirect("/blog");
       } else {
         throw new Error("Unable to find user");
       }

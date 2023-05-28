@@ -104,12 +104,10 @@ app.use(function (req, res, next) {
 
 //Routes
 app.get("/", function (req, res) {
-  console.log("app.get /");
   res.redirect("/blog");
 });
 
 app.get("/about", function (req, res) {
-  console.log("app.get about");
   res.render("about");
 });
 

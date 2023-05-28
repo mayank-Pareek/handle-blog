@@ -44,6 +44,17 @@
   color: #ffffff;
   height: 5rem;
   font-size: 1.7rem;
+  margin-top: 1.5rem;
+}
+
+.about {
+  text-align: center;
+}
+.about > h2 {
+  font-size: 4rem;
+}
+.about > p {
+  text-align: left;
 }
 
 /* Media Query for Small Screens */
@@ -69,6 +80,9 @@
     max-height: 600px;
     margin: 1.5rem;
   }
+  .about {
+    padding: 1rem;
+  }
 }
 
 /* Media Query for Large Screens */
@@ -77,6 +91,9 @@
     max-width: 650px;
     max-height: 700px;
     margin: 2rem;
+  }
+  .about {
+    padding: 0rem 5rem;
   }
 }
 
@@ -89,5 +106,8 @@
   }
   .container {
     width: 90%;
+  }
+  .about {
+    padding: 0rem 6rem;
   }
 }

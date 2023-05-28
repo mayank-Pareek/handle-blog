@@ -39,6 +39,13 @@
   white-space: pre-wrap;
 }
 
+.footer {
+  background-color: #232323;
+  color: #ffffff;
+  height: 5rem;
+  font-size: 1.7rem;
+}
+
 /* Media Query for Small Screens */
 @media screen and (max-width: 576px) {
   #blog-title {
@@ -67,7 +74,7 @@
 /* Media Query for Large Screens */
 @media screen and (min-width: 993px) and (max-width: 1300px) {
   #feature-img {
-    max-width: 600px;
+    max-width: 650px;
     max-height: 700px;
     margin: 2rem;
   }

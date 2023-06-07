@@ -107,10 +107,16 @@ app.get("/", function (req, res) {
   res.redirect("/blog");
 });
 
+app.get("/public/css/main.css", function (req, res) {
+  res.set("Content-Type", "text/css");
+  res.sendFile(path.join(__dirname, "public", "css", "main.css"));
+});
+
 app.get("/about", function (req, res) {
   res.render("about");
 });
 
+/*************login and register*************** */
 app.get("/login", function (req, res) {
   res.render("login");
 });
@@ -158,34 +164,26 @@ app.post("/register", (req, res) => {
     });
 });
 
-app.get("/public/css/main.css", function (req, res) {
-  res.set("Content-Type", "text/css");
-  res.sendFile(path.join(__dirname, "public", "css", "main.css"));
+app.get("/logout", (req, res) => {
+  req.session.reset(); // Reset the session
+  res.redirect("/"); // Redirect to the home page
 });
 
 app.get("/userHistory", ensureLogin, function (req, res) {
   res.render("userHistory");
 });
 
-app.get("/logout", (req, res) => {
-  req.session.reset(); // Reset the session
-  res.redirect("/"); // Redirect to the home page
-});
+/************blog routes************ */
 
 app.get("/blog", async (req, res) => {
   // Declare an object to store properties for the view
   let viewData = {};
 
   try {
-    // declare empty array to hold "post" objects
     let posts = [];
-
-    // if there's a "category" query, filter the returned posts by category
     if (req.query.category) {
-      // Obtain the published "posts" by category
       posts = await blogData.getPublishedPostsByCategory(req.query.category);
     } else {
-      // Obtain the published "posts"
       posts = await blogData.getPublishedPosts();
     }
 
@@ -210,69 +208,7 @@ app.get("/blog", async (req, res) => {
   } catch (err) {
     viewData.categoriesMessage = "no results";
   }
-
-  // render the "blog" view with all of the data (viewData)
   res.render("blog", { data: viewData });
-});
-
-app.post(
-  "/posts/add",
-  upload.single("featureImage"),
-  ensureLogin,
-  (req, res) => {
-    if (req.file) {
-      let streamUpload = (req) => {
-        return new Promise((resolve, reject) => {
-          let stream = cloudinary.uploader.upload_stream((error, result) => {
-            if (result) {
-              resolve(result);
-            } else {
-              reject(error);
-            }
-          });
-
-          streamifier.createReadStream(req.file.buffer).pipe(stream);
-        });
-      };
-
-      async function upload(req) {
-        let result = await streamUpload(req);
-        console.log(result);
-        return result;
-      }
-
-      upload(req).then((uploaded) => {
-        processPost(uploaded.url);
-      });
-    } else {
-      processPost("");
-    }
-
-    function processPost(imageUrl) {
-      req.body.featureImage = imageUrl;
-      blogData.addPost(req.body).then(() => {
-        res.redirect("/posts");
-      });
-    }
-  }
-);
-
-app.post("/categories/add", ensureLogin, (req, res) => {
-  for (let key in req.body) {
-    if (req.body[key] === "") {
-      req.body[key] = null;
-    }
-  }
-
-  blogData
-    .addCategory(req.body)
-    .then(() => {
-      res.redirect("/categories");
-    })
-    .catch((error) => {
-      console.log(error);
-      res.redirect("/categories/add");
-    });
 });
 
 app.get("/blog/:id", async (req, res) => {
@@ -322,20 +258,7 @@ app.get("/blog/:id", async (req, res) => {
   res.render("blog", { data: viewData });
 });
 
-app.get("/categories", ensureLogin, (req, res) => {
-  blogData
-    .getCategories()
-    .then((data) => {
-      if (data.length > 0) {
-        res.render("categories", { categories: data });
-      } else {
-        res.render("categories", { message: "no results" });
-      }
-    })
-    .catch((error) => {
-      res.render("categories", { message: "no results" });
-    });
-});
+/***************post routes******************* */
 
 app.get("/posts", ensureLogin, (req, res) => {
   const { category, minDate } = req.query;
@@ -363,7 +286,7 @@ app.get("/posts", ensureLogin, (req, res) => {
       .getAllPosts()
       .then((data) => {
         if (data.length > 0) {
-          res.render("posts", { posts: data });
+          res.render("posts", { posts: data,user:req.session.user.userName });
         } else {
           res.render("posts", { message: "no results" });
         }
@@ -374,7 +297,7 @@ app.get("/posts", ensureLogin, (req, res) => {
   }
 });
 
-app.get("/post/:value", ensureLogin, (req, res) => {
+app.get("/post/:value", (req, res) => {
   const { value } = req.params;
 
   blogData
@@ -387,6 +310,50 @@ app.get("/post/:value", ensureLogin, (req, res) => {
     });
 });
 
+app.post(
+  "/posts/add",
+  upload.single("featureImage"),
+  ensureLogin,
+  (req, res) => {
+    if (req.file) {
+      let streamUpload = (req) => {
+        return new Promise((resolve, reject) => {
+          let stream = cloudinary.uploader.upload_stream((error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          });
+
+          streamifier.createReadStream(req.file.buffer).pipe(stream);
+        });
+      };
+
+      async function upload(req) {
+        let result = await streamUpload(req);
+        console.log(result);
+        return result;
+      }
+
+      upload(req).then((uploaded) => {
+        processPost(uploaded.url);
+      });
+    } else {
+      processPost("");
+    }
+
+    function processPost(imageUrl) {
+      req.body.featureImage = imageUrl;
+      
+      blogData.addPost(req.body).then(() => {
+        res.redirect("/posts");
+      });
+    }
+  }
+);
+
+
 //Add
 app.get("/posts/add", ensureLogin, (req, res) => {
   blogData
@@ -396,6 +363,53 @@ app.get("/posts/add", ensureLogin, (req, res) => {
     })
     .catch(() => {
       res.render("addPost", { categories: [] });
+    });
+});
+
+app.get("/posts/delete/:id", ensureLogin, (req, res) => {
+  blogData
+    .deletePostById(req.params.id)
+    .then(() => {
+      res.redirect("/posts");
+    })
+    .catch((error) => {
+      res.status(500).send("Unable to Remove Post / Post not found");
+    });
+});
+
+
+/***************category routes************* */
+
+app.get("/categories", ensureLogin, (req, res) => {
+  blogData
+    .getCategories()
+    .then((data) => {
+      if (data.length > 0) {
+        res.render("categories", { categories: data });
+      } else {
+        res.render("categories", { message: "no results" });
+      }
+    })
+    .catch((error) => {
+      res.render("categories", { message: "no results" });
+    });
+});
+
+app.post("/categories/add", ensureLogin, (req, res) => {
+  for (let key in req.body) {
+    if (req.body[key] === "") {
+      req.body[key] = null;
+    }
+  }
+
+  blogData
+    .addCategory(req.body)
+    .then(() => {
+      res.redirect("/categories");
+    })
+    .catch((error) => {
+      console.log(error);
+      res.redirect("/categories/add");
     });
 });
 
@@ -416,24 +430,15 @@ app.get("/categories/delete/:id", ensureLogin, (req, res) => {
     });
 });
 
-app.get("/posts/delete/:id", ensureLogin, (req, res) => {
-  blogData
-    .deletePostById(req.params.id)
-    .then(() => {
-      res.redirect("/posts");
-    })
-    .catch((error) => {
-      res.status(500).send("Unable to Remove Post / Post not found");
-    });
-});
-
 //Error 404
 app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
 });
 
-//Server
+/***************************************** */
+
+//Start server
 (async () => {
   try {
     await authData.initialize();

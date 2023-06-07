@@ -1,6 +1,6 @@
 # Handle Blog
 
-Welcome to the Handle Blog website! My name is Mayank Kumar, and I'm the developer behind this platform. I've built it with a user-friendly UI and incorporated additional features to provide a comprehensive blogging experience. To view deployement click [here](https://handle-blog.onrender.com)
+Welcome to the Handle Blog website! My name is Mayank Kumar, and I'm the developer behind this platform. I've built it with a user-friendly UI and incorporated additional features to provide a comprehensive blogging experience. To view deployement [click here](https://handle-blog.herokuapp.com/blog)
 
 ## Technologies Used
 

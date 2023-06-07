@@ -24,7 +24,7 @@
 <h4>Posts</h4>
 <ul class="list-group">
 {{#each data.posts}}
-<a href="/blog/{{id}}?category={{../viewingCategory}}" class="list-group-item">{{title}}</a>
+<a href="/blog/{{this.id}}" class="list-group-item">{{title}}</a>
 {{/each}}
 </ul>
 {{/if}}
